@@ -36,6 +36,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-fileupload": "^1.2.1",
+    "express-session": "^1.17.2",
     "jquery": "3.5.1",
     "mongoose": "^5.12.2"
   },

@@ -9,7 +9,7 @@ const ejs = require('ejs')
 const { resourceUsage } = require('process')
 
 const fileUpload = require('express-fileupload')
-
+const expressSession = require('express-session')
 // const BlogPost = require('./models/BlogPost')
 
 
@@ -21,9 +21,13 @@ const newUserController = require('./controllers/newUser')
 const storeUserController = require('./controllers/storeUser')
 const loginController = require('./controllers/login')
 const loginUserController = require('./controllers/loginUser')
+const authMiddleware = require('./middleware/authMiddleware')
+const redirectIfAuthenticatedMiddleware = require('./middleware/redirectIfAuthenticatedMiddleware')
+const logoutController = require('./controllers/logout')
 
 app.set('view engine','ejs')
 
+global.loggedIn = null;
 // const validateMiddleWare = (req,res,next) =>{
 //     if(req.files == null || req.body.title == null){
 //         return res.redirect('/posts/new')
@@ -37,6 +41,15 @@ app.use(express.json())
 app.use(express.urlencoded())
 app.use(fileUpload())
 app.use('/posts/store',validateMiddleWare)
+app.use(expressSession({
+    secret: 'keyboard cat'
+}))
+
+app.use("*",(req,res,next)=>{
+    loggedIn = req.session.userId
+    next()
+})
+
 
 app.listen(4000,()=>{
     console.log('App listening on port 4000')
@@ -70,23 +83,28 @@ app.get('/', homeController)
 
 app.get('/post/:id',getPostController);
 
-app.get('/posts/new',newPostController);
+app.get('/posts/new',authMiddleware, newPostController);
 
-app.post('/posts/store', storePostController);
+app.post('/posts/store',authMiddleware, storePostController);
 
-app.post('/users/register', storeUserController);
+app.post('/users/register',redirectIfAuthenticatedMiddleware,storeUserController)
 
 app.get('/', homeController);
 
-app.get('/auth/register', newUserController);
+app.get('/auth/register',redirectIfAuthenticatedMiddleware,newUserController)
 
-app.get('/auth/login', loginController);
+app.get('/auth/login',redirectIfAuthenticatedMiddleware, loginController)
 
-app.post('/users/login', loginUserController);
+app.post('/users/login',redirectIfAuthenticatedMiddleware,loginUserController)
 
+app.get('/auth/logout', logoutController)
 // app.get('/posts/new',(req,res) =>{
 //     res.render('create')
 // })
+
+app.use((req, res) =>{
+    res.render('notfound')
+})
 
 app.post('/posts/store',async (req,res) =>{    
     let image = req.files.image
