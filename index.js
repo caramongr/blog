@@ -1,7 +1,9 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-mongoose.connect('mongodb://localhost/my_database',{useNewUrlParser: true})
+// mongoose.connect('mongodb://localhost/my_database',{useNewUrlParser: true})
+
+mongoose.connect('mongodb+srv://caramongr:5P9dBJE7dQCukLc@cluster0.st6ua.mongodb.net/my_database',{useNewUrlParser: true})
 
 const app = new express()
 const ejs = require('ejs')
