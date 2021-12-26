@@ -7,7 +7,6 @@ module.exports = (req,res) =>{
     
     User.findOne({username: username},function(error,user){        
         if(user){
-            console.log(user);
             bcrypt.compare(password, user.password, (error,same)=>{
                 if(same){
                     req.session.userId = user._id
