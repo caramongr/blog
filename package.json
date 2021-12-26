@@ -20,7 +20,10 @@
     "email": "feedback@startbootstrap.com"
   },
   "license": "MIT",
-  "author": "Start Bootstrap",
+  "engines": {
+"node": "14.15.4"
+  },
+  "author": "Kostas Liakopoulos",
   "contributors": [
     "David Miller (https://davidmiller.io/)"
   ],
